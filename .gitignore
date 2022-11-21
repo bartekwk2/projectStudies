@@ -8,5 +8,5 @@ instance/
 .webassets-cache
 
 # Project hidden
-/data/
+/data/users.csv
 /auth/config.py
