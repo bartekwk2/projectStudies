@@ -1,10 +1,10 @@
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 import bcrypt
 import jwt
-import csv 
+import csv
 
 from .models.user import User
-from .config import Config as cfg
+import os
 from .helpers import get_token_from_header
 
 from .exceptions import (
@@ -18,23 +18,24 @@ from .exceptions import (
 ENCODING = "utf-8"
 USER_DATA = "data/users.csv"
 
+
 def authenticate_user():
-        token = get_token_from_header()
-        if not token:
-            raise InvalidTokenError()
+    token = get_token_from_header()
+    if not token:
+        raise InvalidTokenError()
 
-        token_payload = decode_auth_token(token)
+    token_payload = decode_auth_token(token)
 
-        current_user = get_user(token_payload["sub"])
-        if not current_user:
-            raise InvalidTokenError()
+    current_user = get_user(token_payload["sub"])
+    if not current_user:
+        raise InvalidTokenError()
 
 
 def get_user(user_email):
     with open(USER_DATA) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
-            email,password = row
+            email, password = row
             if email == user_email:
                 return User(email, password)
 
@@ -46,7 +47,6 @@ def login_user(email, password):
         return token
     else:
         raise InvalidCredentialsError()
-
 
 
 def create_user(email, password):
@@ -61,7 +61,6 @@ def create_user(email, password):
         writer.writerow((email, hashed_password))
 
 
-
 def hash_password(password):
     return bcrypt.hashpw(password.encode(ENCODING), bcrypt.gensalt()).decode(ENCODING)
 
@@ -71,19 +70,19 @@ def check_password(password, hashed_password):
 
 
 def encode_auth_token(user_mail):
-    exp_days = cfg.AUTH_TOKEN_EXPIRATION_DAYS
-    exp_seconds = cfg.AUTH_TOKEN_EXPIRATION_SECONDS
+    exp_days = int(os.getenv("AUTH_TOKEN_EXPIRATION_DAYS"))
+    exp_seconds = int(os.getenv("AUTH_TOKEN_EXPIRATION_SECONDS"))
     exp_date = datetime.now() + timedelta(days=exp_days, seconds=exp_seconds)
     payload = {"exp": exp_date, "iat": datetime.today(), "sub": user_mail}
-    return jwt.encode(payload, cfg.SECRET_KEY, algorithm="HS256")
+    return jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm="HS256")
 
 
 def decode_auth_token(token):
     try:
-        payload = jwt.decode(token, cfg.SECRET_KEY, algorithms="HS256")
+        payload = jwt.decode(token, os.getenv(
+            "SECRET_KEY"), algorithms="HS256")
         return payload
     except jwt.ExpiredSignatureError as ex:
         raise TokenExpiredError() from ex
     except jwt.InvalidTokenError as ex:
         raise InvalidTokenError() from ex
-
