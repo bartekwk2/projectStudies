@@ -5,7 +5,7 @@ class AppError(Exception):
 
     status_code = 500
     error_code = "INTERNAL_ERROR"
-    message = "Request nie może być przetworzony w tym momencie"
+    message = "Request nie moze byc przetworzony w tym momencie"
 
     def __init__(self, status_code=None, error_code=None, message=None):
         Exception.__init__(self)
@@ -29,7 +29,7 @@ class InvalidNumberError(AppError):
             self,
             status_code=400,
             error_code="INVALID_NUMBER",
-            message="Podano wartość, która nie jest liczbą całkowitą",
+            message="Podano wartosc, ktora nie jest liczba calkowita",
         )
 
 class InvalidCredentialsError(AppError):
@@ -38,7 +38,7 @@ class InvalidCredentialsError(AppError):
             self,
             status_code=401,
             error_code="INVALID_DATA",
-            message="Nieprawidłowa nazwa użytkownika lub hasło",
+            message="Nieprawidlowa nazwa uzytkownika lub haslo",
         )
 
 class InvalidTokenError(AppError):
@@ -47,7 +47,7 @@ class InvalidTokenError(AppError):
             self,
             status_code=401,
             error_code="INVALID_TOKEN",
-            message="Token jest nieważny lub brak tokena",
+            message="Token jest niewazny lub brak tokena",
         )
 
 class TokenExpiredError(AppError):
@@ -56,7 +56,7 @@ class TokenExpiredError(AppError):
             self,
             status_code=401,
             error_code="TOKEN_EXPIRED",
-            message="Token wygasł",
+            message="Token wygasl",
         )
 
 class InvalidFieldError(AppError):
@@ -65,11 +65,11 @@ class InvalidFieldError(AppError):
             self,
             status_code=422,
             error_code="INVALID_FIELD",
-            message=f"Nieprawidłowe pole: {field_name}. {message}",
+            message=f"Nieprawidlowe pole: {field_name}. {message}",
         )
 
 class BadRequestError(AppError):
-    def __init__(self, message="Nieprawidłowe żądanie."):
+    def __init__(self, message="Nieprawidlowy request"):
         AppError.__init__(
             self, status_code=400, error_code="BAD_REQUEST", message=message
         )

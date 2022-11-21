@@ -25,7 +25,7 @@ def check_prime_number(input):
         isPrime = is_prime(number)
         decided = 'jest' if isPrime else 'nie jest'
 
-        return success_response(f"Podana liczba {decided} liczbą pierwszą")
+        return success_response(f"Podana liczba {decided} liczba pierwsza")
 
     except AppError as e:
         return map_error_to_response(e)
@@ -55,7 +55,7 @@ def signup():
     try:
         auth_data_check()
         create_user(request.json["email"], request.json["password"])
-        return success_response("Udało się stworzyć nowe konto")
+        return success_response("Udalo się stworzyc nowe konto")
 
     except AppError as e:
         return map_error_to_response(e)
